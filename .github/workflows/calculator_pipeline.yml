@@ -29,8 +29,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: judevops.azurecr.io
-          username: ${{ secrets.REPOSITORY_USERNAME }}
-          password: ${{ secrets.LOGIN_CONTAINER_REGISTRY }}
+          username: ${{ secrets.AZURE_USERNAME_REGISTRY }}
+          password: ${{ secrets.AZURE_LOGIN_REGISTRY }}
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
