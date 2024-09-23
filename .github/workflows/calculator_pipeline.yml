@@ -41,12 +41,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./BE/requirements.txt
 
-      # Starts API in background
-      - name: Start REST API
+      - name: Start docker containers
         run: |
-          python BE/calculator.py --rest &
+          docker run --name selenium -d --add-host host.docker.internal:host-gateway -p 4444:4444 -p 5900:5900 --shm-size="2g" selenium/standalone-chrome:4.2.1-20220531
+          docker compose -p webcalculator up -d
+          
+      - name: Sleep to let containers start
+        run: |
+          sleep 60 
+
+      # Starts API in background
+      #- name: Start REST API
+       # run: |
+        #  python BE/calculator.py --rest &
           # Wait to ensure API starts properly
-          sleep 10
+         # sleep 10
 
       # Runs tests with pytest
       - name: Run tests
@@ -69,14 +78,6 @@ jobs:
           username: ${{ secrets.AZURE_USERNAME_REGISTRY }}
           password: ${{ secrets.AZURE_LOGIN_REGISTRY }}
 
-      - name: Start docker containers
-        run: |
-          docker run --name selenium -d --add-host host.docker.internal:host-gateway -p 4444:4444 -p 5900:5900 --shm-size="2g" selenium/standalone-chrome:4.2.1-20220531
-          docker compose -p webcalculator up -d
-          
-      - name: Sleep to let containers start
-        run: |
-          sleep 30 
       
       - name: Build Docker image
         run: |
