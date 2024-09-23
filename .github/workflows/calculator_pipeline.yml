@@ -69,6 +69,15 @@ jobs:
           username: ${{ secrets.AZURE_USERNAME_REGISTRY }}
           password: ${{ secrets.AZURE_LOGIN_REGISTRY }}
 
+      - name: Start docker containers
+        run: |
+          docker run --name selenium -d --add-host host.docker.internal:host-gateway -p 4444:4444 -p 5900:5900 --shm-size="2g" selenium/standalone-chrome:4.2.1-20220531
+          docker compose -p webcalculator up -d
+          
+      - name: Sleep to let containers start
+        run: |
+          sleep 30 
+      
       - name: Build Docker image
         run: |
           docker build -t judevops.azurecr.io/scott_nordqvist_calculator:latest ./BE
